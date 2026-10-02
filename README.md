@@ -12,6 +12,14 @@ npm run build    # production build → dist/
 
 Kompyuterda ilova 390×844 telefon ramkasida, telefonda esa to‘liq ekranda ochiladi.
 
+### Bitta HTML fayl (claude.ai Artifact)
+
+```bash
+npm run build:artifact   # dist-artifact/hamyon.html — CSS va JS ichida
+```
+
+Bu faylda router manzillarni xotirada saqlaydi (`VITE_ROUTER=memory`). Oddiy build esa hash-routing ishlatadi (`/#/budget`), shuning uchun `dist/` ni istalgan statik hostingga (GitHub Pages, Vercel, Netlify) qo‘shimcha sozlamasiz qo‘yish mumkin.
+
 ## Ekranlar
 
 | Bo‘lim | Yo‘l | Fayl |

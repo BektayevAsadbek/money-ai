@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Icon } from '../components/Icon'
-import { MenuItem, Sheet, Switch, TopBar, useToast } from '../components/ui'
+import { ConfirmSheet, MenuItem, Sheet, Switch, TopBar, useToast } from '../components/ui'
 import { CATEGORIES } from '../data/categories'
 import { useStore } from '../data/store'
 import { fmt, MONTHS, sameDay, time } from '../lib/format'
@@ -18,6 +18,7 @@ export function Profile() {
   const navigate = useNavigate()
   const [toast, say] = useToast()
   const [theme, setTheme] = useState(false)
+  const [leaving, setLeaving] = useState(false)
   const p = state.profile
   const subTotal = state.subscriptions.reduce((a, s) => a + s.price, 0)
 
@@ -78,12 +79,14 @@ export function Profile() {
           <MenuItem icon="help" label="Yordam" onClick={() => say('Yordam: support@hamyon.uz')} />
         </div>
 
-        <button type="button" className="btn danger" onClick={() => { if (confirm('Hisobdan chiqasizmi? Barcha maʼlumotlar demo holatiga qaytadi.')) { reset(); navigate('/welcome', { replace: true }) } }}>
+        <button type="button" className="btn danger" onClick={() => setLeaving(true)}>
           <Icon name="logout" size={18} />Chiqish
         </button>
       </main>
       {toast}
 
+      <ConfirmSheet open={leaving} title="Hisobdan chiqasizmi?" body="Barcha maʼlumotlar demo holatiga qaytadi." cta="Chiqish"
+        onClose={() => setLeaving(false)} onConfirm={() => { reset(); navigate('/welcome', { replace: true }) }} />
       <Sheet open={theme} onClose={() => setTheme(false)} title="Asosiy rang">
         <div className="row" style={{ justifyContent: 'space-between' }}>
           {ACCENTS.map((c) => (

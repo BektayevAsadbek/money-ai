@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { Icon } from '../components/Icon'
-import { CategoryPicker, MenuItem, Sheet, TopBar, useToast } from '../components/ui'
+import { CategoryPicker, ConfirmSheet, MenuItem, Sheet, TopBar, useToast } from '../components/ui'
 import { CATEGORIES, EXPENSE_CATEGORIES } from '../data/categories'
 import { inMonth, useMonth, useStore } from '../data/store'
 import { fmt, longDate } from '../lib/format'
@@ -13,7 +13,7 @@ export default function Detail() {
   const navigate = useNavigate()
   const { state, updateTransaction, deleteTransaction } = useStore()
   const month = useMonth()
-  const [sheet, setSheet] = useState<'cat' | 'note' | 'items' | 'more' | null>(null)
+  const [sheet, setSheet] = useState<'cat' | 'note' | 'items' | 'more' | 'delete' | null>(null)
   const [note, setNote] = useState('')
   const [toast, say] = useToast()
   const tx = state.transactions.find((t) => t.id === id)
@@ -34,9 +34,7 @@ export default function Detail() {
     } catch { /* user cancelled */ }
   }
 
-  const remove = () => {
-    if (confirm('Amal oʻchirilsinmi?')) { deleteTransaction(tx.id); navigate(-1) }
-  }
+  const remove = () => setSheet('delete')
 
   return (
     <>
@@ -78,6 +76,8 @@ export default function Detail() {
       <div className="footer"><button type="button" className="btn danger" onClick={remove}>Amalni oʻchirish</button></div>
       {toast}
 
+      <ConfirmSheet open={sheet === 'delete'} title="Amal oʻchirilsinmi?" body={`${tx.title} · ${fmt(tx.amount)} soʻm. Bu amalni qaytarib boʻlmaydi.`} cta="Oʻchirish"
+        onClose={() => setSheet(null)} onConfirm={() => { deleteTransaction(tx.id); navigate(-1) }} />
       <Sheet open={sheet === 'cat'} onClose={() => setSheet(null)} title="Toifani tanlang">
         <CategoryPicker value={tx.category} options={income ? ['income'] : EXPENSE_CATEGORIES} onPick={(c) => { updateTransaction(tx.id, { category: c }); setSheet(null) }} />
       </Sheet>
@@ -94,7 +94,7 @@ export default function Detail() {
         <div className="menu-group" style={{ background: 'var(--surface-2)' }}>
           <MenuItem icon="share" label="Boʻlishish" onClick={() => { setSheet(null); share() }} />
           <MenuItem icon="edit" label="Toifani oʻzgartirish" onClick={() => setSheet('cat')} />
-          <MenuItem icon="close" color="var(--danger)" label="Oʻchirish" onClick={() => { setSheet(null); remove() }} />
+          <MenuItem icon="close" color="var(--danger)" label="Oʻchirish" onClick={remove} />
         </div>
       </Sheet>
     </>

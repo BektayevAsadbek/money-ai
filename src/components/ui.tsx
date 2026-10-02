@@ -168,3 +168,15 @@ export function AmountSheet({ open, title, cta, initial = '', onClose, onSubmit 
     </Sheet>
   )
 }
+
+export function ConfirmSheet({ open, title, body, cta, onClose, onConfirm }: { open: boolean; title: string; body: string; cta: string; onClose: () => void; onConfirm: () => void }) {
+  return (
+    <Sheet open={open} onClose={onClose} title={title}>
+      <p className="caption" style={{ margin: 0, fontSize: 14, lineHeight: 1.5 }}>{body}</p>
+      <div className="row" style={{ gap: 8 }}>
+        <button type="button" className="btn sm" style={{ background: 'var(--surface-2)' }} onClick={onClose}>Bekor qilish</button>
+        <button type="button" className="btn sm" style={{ background: 'var(--danger)', color: 'var(--on-accent)' }} onClick={() => { onClose(); onConfirm() }}>{cta}</button>
+      </div>
+    </Sheet>
+  )
+}
